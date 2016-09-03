@@ -37,7 +37,7 @@ This figuring out had taken long enough that the optocouplers I ordered had turn
 
 The current limiting resistor between the arduino and the optocoupler is something about 220Ω, and the pull up on the light side is about 10kΩ so we don't get very much current there. 
 
-Then I just needed [a sketch to send commands](code/ir-control/ir_command.ino). This is very rough still; the command it sends is hard coded and it just loops sending it over and over. But it does work - I can switch a light on and off with it. 
+Then I just needed [a sketch to send commands](/code/ir-control/ir_command.ino). This is very rough still; the command it sends is hard coded and it just loops sending it over and over. But it does work - I can switch a light on and off with it. 
 
 ### Next steps
 
