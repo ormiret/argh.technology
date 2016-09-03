@@ -1,6 +1,6 @@
 {:site-title         "Argh.technology"
  :author             "Robert McWilliam"
- :description        "Half (or less) formed thought"
+ :description        "Half (or less) formed thoughts"
  :site-url           "http://argh.technology/"
  :post-root          "posts"
  :page-root          "pages"
