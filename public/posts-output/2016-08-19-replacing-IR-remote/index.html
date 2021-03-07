@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <title>Argh.technology: Replacing IR remote</title>
+    <link rel="canonical" href="http://argh.technology/posts-output/2016-08-19-replacing-IR-remote/">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="//fonts.googleapis.com/css?family=Alegreya:400italic,700italic,400,700" rel="stylesheet"
+          type="text/css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css">
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.7.0/styles/default.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Special+Elite|Amiri" rel="stylesheet">
+    <link href="/css/screen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+
+
+<nav class="navbar navbar-default">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Argh.technology</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav navbar-right">
+                <li ><a href="/">Home</a></li>
+                <li
+                ><a href="/archives/">Archives</a></li>
+                
+                <li
+                >
+                <a href="/pages-output/about/">About</a>
+                </li>
+                
+                <li><a href="/feed.xml">RSS</a></li>
+            </ul>
+        </div><!--/.nav-collapse -->
+    </div><!--/.container-fluid -->
+</nav>
+
+
+<div class="container">
+
+
+    <div class="row">
+        <div class="col-lg-9">
+            <div id="content">
+                
+<div id="post">
+    <div class="post-header">
+    <div id="post-meta" class="row">
+        <div class="col-lg-6">19 August 2016</div>
+        
+    </div>
+    <h2>Replacing IR remote</h2>
+</div>
+<div>
+    
+    <p>I've picked up a few LED floodlights that can do various colours (and some effects) controlled by IR remotes. They have their uses as they are - but I want to replace the IR remotes with something connected to a computer so I can have random programs control them.</p><h3 id="getting&#95;ir&#95;codes">Getting IR codes</h3><p>The first thing I wanted to do was record the IR codes that the remote was sending.</p><p>I found <a href='http://alexba.in/blog/2013/01/06/setting-up-lirc-on-the-raspberrypi/'>some stuff</a> on using <a href='http://lirc.org'>lirc</a> on a pi, so cut one of the IR receivers off a light and hooked it up to a pi and recorded the codes from the remote. That gave <a href='/code/ir-control/lircd.conf'>a lirc config file</a> with the codes.</p><p>I used keysims <code>KEY&#95;A</code> through <code>KEY&#95;X</code> for the buttons on the remote starting at the top left going across the top row, then down to the next. So <code>KEY&#95;C</code> is off, <code>KEY&#95;D</code> is on, down to <code>KEY&#95;X</code> in the bottom right for smooth.</p><h3 id="sending&#95;ir&#95;codes">Sending IR codes</h3><p>When I started messing with this I thought I could use lirc's ability to send codes by wiring the output pin from the pi to the signal line going into the light and all would be good. I tried it and it didn't work. I thought the issue might be that the two had a different ground so the signal wasn't at the right level. I tried solving that by connecting the light and pi's grounds to each other. That switched the pi off. Luckilly it came back on, apparently none the worse for wear, once I disconnected them again. I guess they were at different levels, by enough to upset the pi's power stuff.</p><p>I decided I needed some output isolation. I was sure I had some optocouplers around somewhere, but couldn't find them, so I ordered some more.</p><p>While waiting for them to turn up I had a look at <a href='https://arduino-info.wikispaces.com/file/view/IR-Receiver-AX-1838HS.pdf/264668680/IR-Receiver-AX-1838HS.pdf'>the datasheet for the IR receiver</a> and discovered that it did more than just pass the IR signal to it's output. Turns out IR remotes have a carrier (38kHz for this one) that they send, or don't, for periods of time to send things. The receiver gives a constant low when it sees the carrier and a constant high the rest of the time.</p><p>Since lirc was set up to be sending the carrier via an IR LED the signal it was outputting wouldn't match what the light was expecting to get from the receiver module.</p><p>I considered changing lirc's output, or building a circuit to do the transform the receiver module was doing (a low pass filter and an inverter? would a cap and a transistor be enough?), but opted for swapping the pi out for an arduino to generate the right waveform since I know what I'm doing there a lot better than getting into the lirc code or doing anything analogue.</p><p>I just needed to figure out what the right waveform was from the <a href='/code/ir-control/lircd.conf'>lirc config file</a>.</p><p>I read a bit about how IR command frames work (on sites that I can't find now...). Short version is that there are a few encoding schemes the <code>SPACE&#95;ENC</code> on the <code>flags</code> line tells us we need pulse space encoding: the length of the gap between pulses determines if it's a 1 or a 0. The timing for each of those is on the <code>one</code> and <code>zero</code> lines; first number gives the length of the pulse, second one the length of the space before the next bit (both in microseconds). We also have a header (or in some descriptions: preamble) of one longer than normal pulse followed by a longer than normal space. Timings for those are on the <code>header</code> line. After the header will come the 16 <code>pre&#95;data&#95;bits</code>, which <code>pre&#95;data</code> line says should be <code>0xF7</code>. Then the 16 actual data bits - which will vary depending on which of the codes we want to send. The frame then concludes with a trailing pulse (timing from <code>ptrail</code>) and then a minimum period before the next code should be sent (<code>gap</code>).</p><p>I couldn't find anything to say what the bit ordering should be. I decided I'd try "most significant bit first" first, then "least significant bit first", then the variation on byte vs bit ordering till I got an ordering that worked (or ran out of ways to reorder them and would have to go looking for something else that might be wrong). As it turned out "most significant bit first" was actually right, so didn't need to try any of the others.</p><p>This figuring out had taken long enough that the optocouplers I ordered had turned up, so I decided to try doing things properly and isolate the light from the arduino. If figured I could also use this to invert the signal from the arduino so I can write the code with the output normally being low and going high for pulses. That's the way round I think of as normal so it reduces the chance of me getting bugs from getting it the wrong way round somewhere. I hooked up the optocoupler like this:</p><p><img src="/img/ir-control/circuit.png" alt="circuit" /></p><p>The current limiting resistor between the arduino and the optocoupler is something about 220Ω, and the pull up on the light side is about 10kΩ so we don't get very much current there. </p><p>Then I just needed <a href='/code/ir-control/ir_command.ino'>a sketch to send commands</a>. This is very rough still; the command it sends is hard coded and it just loops sending it over and over. But it does work - I can switch a light on and off with it. </p><h3 id="next&#95;steps">Next steps</h3><p>I need to update the arduino sketch to allow the commands to be sent in (probably over serial). Then add support for more lights. Then I need to figure out something to actually do with a few computer controlled RGB floodlights...</p>
+</div>
+
+<div id="post-tags">
+    <b>Tags: </b>
+    
+    <a href="/tags-output/electronics/">electronics</a>
+    
+    <a href="/tags-output/IR/">IR</a>
+    
+    <a href="/tags-output/LED/">LED</a>
+    
+    <a href="/tags-output/arduino/">arduino</a>
+    
+</div>
+
+<div id="permalink">
+  <a href="/posts-output/2016-08-19-replacing-IR-remote/">permalink</a>
+</div>
+
+    <div id="prev-next">
+        
+        <a href="/posts-output/2016-09-03-photography/">&laquo; Photography</a>
+        
+        
+        <a class="right" href="/posts-output/2016-08-13-new-site/">New site &raquo;</a>
+        
+    </div>
+
+    
+
+
+</div>
+
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div id="sidebar">
+              
+                <div id="recent">
+                    <h3>Recent Posts</h3>
+                    <ul>
+                        
+                        <li><a href="/posts-output/2020-08-15-building-houses/">Building Houses In Gardens</a></li>
+                        
+                        <li><a href="/posts-output/2020-07-07-hp-psu/">HP server PSU</a></li>
+                        
+                        <li><a href="/posts-output/2020-06-10-pstree/">The pstree options I want</a></li>
+                        
+                        <li><a href="/posts-output/2018-04-02-network-effect/">Network effect</a></li>
+                        
+                        <li><a href="/posts-output/2018-01-02-save-battery-life/">Save chrome eating battery life</a></li>
+                        
+                    </ul>
+                </div>
+                
+                
+                <div id="tags">
+                    <h3>Tags</h3>
+                    <ul>
+                        
+                        <li><a href="/tags-output/linux/">linux</a></li>
+                        
+                        <li><a href="/tags-output/electronics/">electronics</a></li>
+                        
+                        <li><a href="/tags-output/for when I have more money than sense/">for when I have more money than sense</a></li>
+                        
+                        <li><a href="/tags-output/micropython/">micropython</a></li>
+                        
+                        <li><a href="/tags-output/IR/">IR</a></li>
+                        
+                        <li><a href="/tags-output/business/">business</a></li>
+                        
+                        <li><a href="/tags-output/photography/">photography</a></li>
+                        
+                        <li><a href="/tags-output/12V/">12V</a></li>
+                        
+                        <li><a href="/tags-output/meta/">meta</a></li>
+                        
+                        <li><a href="/tags-output/building/">building</a></li>
+                        
+                        <li><a href="/tags-output/tech/">tech</a></li>
+                        
+                        <li><a href="/tags-output/notes/">notes</a></li>
+                        
+                        <li><a href="/tags-output/plans/">plans</a></li>
+                        
+                        <li><a href="/tags-output/long tail/">long tail</a></li>
+                        
+                        <li><a href="/tags-output/art/">art</a></li>
+                        
+                        <li><a href="/tags-output/code/">code</a></li>
+                        
+                        <li><a href="/tags-output/procrastination/">procrastination</a></li>
+                        
+                        <li><a href="/tags-output/LED/">LED</a></li>
+                        
+                        <li><a href="/tags-output/arduino/">arduino</a></li>
+                        
+                        <li><a href="/tags-output/thoughts/">thoughts</a></li>
+                        
+                        <li><a href="/tags-output/idea/">idea</a></li>
+                        
+                    </ul>
+                </div>
+                
+                <h3>Links</h3>
+                <ul id="links">
+                    
+                    <li><a href="/pages-output/gary/">Gary</a></li>
+                    
+                </ul>
+            </div>
+        </div>
+    </div>
+    <footer>Copyright &copy; 2020 Robert McWilliam
+      <p>Writing is under <a href="https://creativecommons.org/licenses/by-sa/4.0/legalcode">CC BY-SA</a></p>
+      <p>Code here (that's mine) is under the <a href="http://www.wtfpl.net/txt/copying/">WTFPL</a></p>
+      <p>Code that isn't mine is &copy; whoever owns it (should be noted with the code...).</p>
+      <p style="text-align: center;">Powered by <a href="http://cryogenweb.org">Cryogen</a></p></footer>
+</div>
+<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+<script src="/js/highlight.pack.js" type="text/javascript"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+</body>
+</html>
