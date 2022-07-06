@@ -2,8 +2,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
     <meta charset="utf-8"/>
-    <title>Argh.technology: Replacing IR remote</title>
-    <link rel="canonical" href="http://argh.technology/posts-output/2016-08-19-replacing-IR-remote/">
+    <title>Argh.technology: More Gig Photos</title>
+    <link rel="canonical" href="http://argh.technology/posts-output/2022-06-27-more-gig-photos/">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="//fonts.googleapis.com/css?family=Alegreya:400italic,700italic,400,700" rel="stylesheet"
           type="text/css">
@@ -55,39 +55,33 @@
 <div id="post">
     <div class="post-header">
     <div id="post-meta" class="row">
-        <div class="col-lg-6">19 August 2016</div>
+        <div class="col-lg-6">27 June 2022</div>
         
     </div>
-    <h2>Replacing IR remote</h2>
+    <h2>More Gig Photos</h2>
 </div>
 <div>
     
-    <p>I've picked up a few LED floodlights that can do various colours (and some effects) controlled by IR remotes. They have their uses as they are - but I want to replace the IR remotes with something connected to a computer so I can have random programs control them.</p><h3 id="getting&#95;ir&#95;codes">Getting IR codes</h3><p>The first thing I wanted to do was record the IR codes that the remote was sending.</p><p>I found <a href='http://alexba.in/blog/2013/01/06/setting-up-lirc-on-the-raspberrypi/'>some stuff</a> on using <a href='http://lirc.org'>lirc</a> on a pi, so cut one of the IR receivers off a light and hooked it up to a pi and recorded the codes from the remote. That gave <a href='/code/ir-control/lircd.conf'>a lirc config file</a> with the codes.</p><p>I used keysims <code>KEY&#95;A</code> through <code>KEY&#95;X</code> for the buttons on the remote starting at the top left going across the top row, then down to the next. So <code>KEY&#95;C</code> is off, <code>KEY&#95;D</code> is on, down to <code>KEY&#95;X</code> in the bottom right for smooth.</p><h3 id="sending&#95;ir&#95;codes">Sending IR codes</h3><p>When I started messing with this I thought I could use lirc's ability to send codes by wiring the output pin from the pi to the signal line going into the light and all would be good. I tried it and it didn't work. I thought the issue might be that the two had a different ground so the signal wasn't at the right level. I tried solving that by connecting the light and pi's grounds to each other. That switched the pi off. Luckilly it came back on, apparently none the worse for wear, once I disconnected them again. I guess they were at different levels, by enough to upset the pi's power stuff.</p><p>I decided I needed some output isolation. I was sure I had some optocouplers around somewhere, but couldn't find them, so I ordered some more.</p><p>While waiting for them to turn up I had a look at <a href='https://arduino-info.wikispaces.com/file/view/IR-Receiver-AX-1838HS.pdf/264668680/IR-Receiver-AX-1838HS.pdf'>the datasheet for the IR receiver</a> and discovered that it did more than just pass the IR signal to it's output. Turns out IR remotes have a carrier (38kHz for this one) that they send, or don't, for periods of time to send things. The receiver gives a constant low when it sees the carrier and a constant high the rest of the time.</p><p>Since lirc was set up to be sending the carrier via an IR LED the signal it was outputting wouldn't match what the light was expecting to get from the receiver module.</p><p>I considered changing lirc's output, or building a circuit to do the transform the receiver module was doing (a low pass filter and an inverter? would a cap and a transistor be enough?), but opted for swapping the pi out for an arduino to generate the right waveform since I know what I'm doing there a lot better than getting into the lirc code or doing anything analogue.</p><p>I just needed to figure out what the right waveform was from the <a href='/code/ir-control/lircd.conf'>lirc config file</a>.</p><p>I read a bit about how IR command frames work (on sites that I can't find now...). Short version is that there are a few encoding schemes the <code>SPACE&#95;ENC</code> on the <code>flags</code> line tells us we need pulse space encoding: the length of the gap between pulses determines if it's a 1 or a 0. The timing for each of those is on the <code>one</code> and <code>zero</code> lines; first number gives the length of the pulse, second one the length of the space before the next bit (both in microseconds). We also have a header (or in some descriptions: preamble) of one longer than normal pulse followed by a longer than normal space. Timings for those are on the <code>header</code> line. After the header will come the 16 <code>pre&#95;data&#95;bits</code>, which <code>pre&#95;data</code> line says should be <code>0xF7</code>. Then the 16 actual data bits - which will vary depending on which of the codes we want to send. The frame then concludes with a trailing pulse (timing from <code>ptrail</code>) and then a minimum period before the next code should be sent (<code>gap</code>).</p><p>I couldn't find anything to say what the bit ordering should be. I decided I'd try "most significant bit first" first, then "least significant bit first", then the variation on byte vs bit ordering till I got an ordering that worked (or ran out of ways to reorder them and would have to go looking for something else that might be wrong). As it turned out "most significant bit first" was actually right, so didn't need to try any of the others.</p><p>This figuring out had taken long enough that the optocouplers I ordered had turned up, so I decided to try doing things properly and isolate the light from the arduino. If figured I could also use this to invert the signal from the arduino so I can write the code with the output normally being low and going high for pulses. That's the way round I think of as normal so it reduces the chance of me getting bugs from getting it the wrong way round somewhere. I hooked up the optocoupler like this:</p><p><img src="/img/ir-control/circuit.png" alt="circuit" /></p><p>The current limiting resistor between the arduino and the optocoupler is something about 220Ω, and the pull up on the light side is about 10kΩ so we don't get very much current there. </p><p>Then I just needed <a href='/code/ir-control/ir_command.ino'>a sketch to send commands</a>. This is very rough still; the command it sends is hard coded and it just loops sending it over and over. But it does work - I can switch a light on and off with it. </p><h3 id="next&#95;steps">Next steps</h3><p>I need to update the arduino sketch to allow the commands to be sent in (probably over serial). Then add support for more lights. Then I need to figure out something to actually do with a few computer controlled RGB floodlights...</p>
+    <p>Since my <a href='/posts-output/2022-06-13-gig-photos/'>last post</a> I have been along to a few more heats of Krakatoa's battle of the bands. For some of them I took pictures. And I have now got round to processing those pictures. Definitely still rusty but I think getting better. </p><p>The heat numbering seems to have gotten broken: there was a heat between heat's 4 and 5 in <a href='https://www.57north.org/listings/2022/06'>the listings</a> so I'm just going to go for dates.</p><p><a href='https://f002.backblazeb2.com/file/ormiret-pub/2022-06-24-Eruption-heat/gallery.html'>24th June</a> <a href='https://f002.backblazeb2.com/file/ormiret-pub/2022-06-24-Eruption-heat/gallery.html'><img src="https://f002.backblazeb2.com/file/ormiret-pub/2022-06-24-Eruption-heat/P1080601.jpg"></a></p><p><a href='https://f002.backblazeb2.com/file/ormiret-pub/2022-06-25-Eruption-heat/gallery.html'>25th June</a> <a href='https://f002.backblazeb2.com/file/ormiret-pub/2022-06-25-Eruption-heat/gallery.html'><img src="https://f002.backblazeb2.com/file/ormiret-pub/2022-06-25-Eruption-heat/P1080918.jpg"></a></p><p><a href='https://f002.backblazeb2.com/file/ormiret-pub/2022-07-02_Eruption_Heat_5/gallery.html'>2nd July</a> <a href='https://f002.backblazeb2.com/file/ormiret-pub/2022-07-02_Eruption_Heat_5/gallery.html'><img src="https://f002.backblazeb2.com/file/ormiret-pub/2022-07-02_Eruption_Heat_5/P1090292.jpg"></a></p><p>I think I need to figure something else out as an index for galleries. I like my <a href='https://github.com/ormiret/gallerygen'>simple static gallery generator</a> and then chucking the files into whatever web hosting I feel like but could do with a single jumping off point to link to individual galleries. </p>
 </div>
 
 <div id="post-tags">
     <b>Tags: </b>
     
-    <a href="/tags-output/electronics/">electronics</a>
+    <a href="/tags-output/photography/">photography</a>
     
-    <a href="/tags-output/IR/">IR</a>
-    
-    <a href="/tags-output/LED/">LED</a>
-    
-    <a href="/tags-output/arduino/">arduino</a>
+    <a href="/tags-output/music/">music</a>
     
 </div>
 
 <div id="permalink">
-  <a href="/posts-output/2016-08-19-replacing-IR-remote/">permalink</a>
+  <a href="/posts-output/2022-06-27-more-gig-photos/">permalink</a>
 </div>
 
     <div id="prev-next">
         
-        <a href="/posts-output/2016-09-03-photography/">&laquo; Photography</a>
         
-        
-        <a class="right" href="/posts-output/2016-08-13-new-site/">New site &raquo;</a>
+        <a class="right" href="/posts-output/2022-06-13-gig-photos/">Gig Photos &raquo;</a>
         
     </div>
 
