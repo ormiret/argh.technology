@@ -2,8 +2,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
     <meta charset="utf-8"/>
-    <title>Argh.technology</title>
-    <link rel="canonical" href="http://argh.technology">
+    <title>Argh.technology: hackerdeenbot v2</title>
+    <link rel="canonical" href="http://argh.technology/posts-output/2022-10-23-hackdeenbot-v2/">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="//fonts.googleapis.com/css?family=Alegreya:400italic,700italic,400,700" rel="stylesheet"
           type="text/css">
@@ -53,71 +53,53 @@
             <div id="content">
                 
 <div id="post">
-    
     <div class="post-header">
-        <a href="/posts-output/2020-08-15-building-houses/"><h2>Building Houses In Gardens</h2></a>
-        <div id="post-meta">
-            
-            <div class="date">15 August 2020</div>
-        </div>
+    <div id="post-meta" class="row">
+        <div class="col-lg-6">23 October 2022</div>
+        
     </div>
-    <p>I have a garden that I don't use. It's about the same size as the footprint of my flat. I think it would be a much better use of the space to put another house on it. I'm unlikely to ever actually do that because planning application to do it would cost money and be a lot of hassle. I don't know the odds of actually getting the planning permission but "low" is likely a good first approximation. </p><p>There are <a href="https://www.ons.gov.uk/peoplepopulationandcommunity/birthsdeathsandmarriages/families/bulletins/familiesandhouseholds/2018#:~:text=In%202018%2C%20there%20were%2027.6%20million%20households%20in%20the%20UK,10%2Dyear%20period%20from%202008.">27.6 million households</a> in the UK and <a href="https://www.ons.gov.uk/economy/environmentalaccounts/articles/oneineightbritishhouseholdshasnogarden/2020-05-14">80% of people have access to a garden</a> so I think there is decent scope for there being more than just me with a garden that would be better off as another house.</p><p>If someone were to offer to do the planning application (and build) for me in exchange for a split of the sale of the new house, I'd be keen to take them up on that. (If anyone does want to make that offer please get in touch.) </p><p>I think there is a workable business model in making that offer. The odds of getting planning permission for any one application might be "low" but make enough of them and some will come through. If you're making a bunch of planning applications you'll have some economies of scale. You could go nuts and automate the whole process (plonk plans for a kit home on map for the site; submit that) and just spam them at planning offices, but I think that's likely to just piss off planning officers and get them all rejected. Something with automated preparation and having a person check them over and only submit ones with best chance of getting approved is likely to work better. Should be able to learn (either with machines or people) what features influence the probability of getting approval. </p>
-    <a href="/posts-output/2020-08-15-building-houses/">Continue reading &#8594;</a>
-    <hr>
+    <h2>hackerdeenbot v2</h2>
+</div>
+<div>
     
-    <div class="post-header">
-        <a href="/posts-output/2020-07-07-hp-psu/"><h2>HP server PSU</h2></a>
-        <div id="post-meta">
-            
-            <div class="date">7 July 2020</div>
-        </div>
-    </div>
-    <p>The guy with the Swiss accent <a href="https://www.youtube.com/watch?v=0IX3euYOb5E">covered</a> using server PSUs as a cheap 12V power supply. I had seen other computer PSUs converted to use outside of the computers they were intended for but this one tempted me to go for it since it has all it's power as one 12V output and it can drive 62.5A on that output (there are also 1200W models, but 750W seemed like enough for me). And for less than £15. So I got three.</p><p>They've got a few part/model numbers: Regulatory Model No. HSTNS-PL18, Generic Part No. 506821-001, Part No. 506822-001 and Spare Part No. 511778-001.</p><p>First thing I did was power one up and poke at it with a meter. That confirmed that the always on 12V line was where I was expecting it, +12V on pin 37 and GND on pin 30. This always on connection is good for 30W. </p><p>I then soldered a switch between pins 33 and 36. Closing that switch powered on the main 12V output. And some more poking with a meter and some loads confirmed that pin 34 gave an on/off status of a little over 3V and pin 34 gave a voltage that varied with load. This looked about right for the 20A per V I was expecting. That confirmed all the details of the pinout that I cared about.</p>
-    <a href="/posts-output/2020-07-07-hp-psu/">Continue reading &#8594;</a>
-    <hr>
+    <p>In the dim and distant past I made an <a href='https://github.com/ormiret/spacebot'>IRC bot</a> for what was then hackerdeen hackspace. It was written in clojure and had become more hassle than it worth to keep running. This was a combination of friction from JVM (it'll eat <em>all</em> the memory if you're not careful, has it's own SSL cert handling etc.) and my code not being very good at handling disconnects so regularly needing to be manually restarted. </p><p>I wanted to move to something that would have a more complete IRC client (handling authentication, reconnects etc.) and giving me an interface to send messages from external things happening (e.g. space is opened/closed) and respond to commands. </p><p>Options I know of for this are <a href='https://tools.suckless.org/ii/'>suckless ii</a> and <a href='https://github.com/irccloud/irccat'>irccat</a>. I plumped for irccat, mostly because I had used it before so already kind of knew what I was doing to configure it and the approach to commands is a bit easier there: irccat will call a command handler executable with some env variables to give context of the command trigger and that executable just needs to print to console for response where with ii you'd have to parse the stream of messages for all channels watching for commands (I didn't get as far as figuring out how that would work for PRIVMSG commands) then write response to appropriate file. </p><p>I didn't port over all of the "features" of original hackerdeenbot - some of them connected to other systems that don't exist any more and some were silly jokes that even I think have run their course now. </p><p><a href='https://github.com/ormiret/misc/blob/main/command_handler.py'>commands</a> I did implement:</p><pre><code> !gary: summon gary
+ !ping: pong
+ !membership: how many members have paid?
+ !histogram: graph of how many members have paid
+ !rules: space rules
+ !rule &lt;n&gt;: the nth rule
+</code></pre><p>Plus messages when the space is <a href='https://github.com/ormiret/misc/blob/main/watch_status.py'>opened or closed</a>.</p>
+</div>
+
+<div id="post-tags">
+    <b>Tags: </b>
     
-    <div class="post-header">
-        <a href="/posts-output/2020-06-10-pstree/"><h2>The pstree options I want</h2></a>
-        <div id="post-meta">
-            
-            <div class="date">10 June 2020</div>
-        </div>
-    </div>
-    <p>I use <code>pstree</code> every so often to investigate how something was called or what something has spawned. I almost always want the same behaviour: show me parents and children of this process, with PIDs and usernames. To get that I should use <code>pstree -sup &lt;PID&gt;</code>.</p><p>Now I should know where to look when I can't remember what the options I want are.</p>
-    <a href="/posts-output/2020-06-10-pstree/">Continue reading &#8594;</a>
-    <hr>
+    <a href="/tags-output/irc/">irc</a>
     
-    <div class="post-header">
-        <a href="/posts-output/2018-04-02-network-effect/"><h2>Network effect</h2></a>
-        <div id="post-meta">
-            
-            <div class="date">2 April 2018</div>
-        </div>
-    </div>
-    <p>As Warren Ellis <a href="http://morning.computer/2018/04/network-effects/">recently mentioned</a>: once upon a time if your kink was one in a million you needed to be in a fairly big city to find a single digit number of people who might be on the same page. </p><p>Finding them was a non-trivial exercise. </p><p>Those days are past (but recent enough that I can remember them). </p><p>The internet now connects <a href="https://en.wikipedia.org/wiki/Global_Internet_usage">3.something billion people</a>. A one in a million kink lumps you in with a few thousand people. And they're only a Google search away. </p>
-    <a href="/posts-output/2018-04-02-network-effect/">Continue reading &#8594;</a>
-    <hr>
+    <a href="/tags-output/57N/">57N</a>
     
-    <div class="post-header">
-        <a href="/posts-output/2018-01-02-save-battery-life/"><h2>Save chrome eating battery life</h2></a>
-        <div id="post-meta">
-            
-            <div class="date">2 January 2018</div>
-        </div>
-    </div>
-    <p>I seem to collect chrome tabs. I usually have a few dozen open, often many more if I haven't cleaned them out for a while. Once upon a time reboots would clear them out but these days I reopen the previous session when I boot so tabs don't go away unless I actually tell them to. Lots of them do stuff in the background so chrome ends up using a decent chunk of CPU time. It is almost always at the top of the list in powertop. </p><p>Most of the time I don't care about this. If my computer is plugged in then it's fine. When I'm running on battery though I care a lot more. Then when I'm doing something that I don't need the web I put chrome to sleep with <code>killall -STOP chrome</code> and then when I want it back: <code>killall -CONT chrome</code>. Bind those two commands to keys and I can stop and start chrome as needed, and when I don't need it it doesn't get to eat my precious battery life. </p>
-    <a href="/posts-output/2018-01-02-save-battery-life/">Continue reading &#8594;</a>
-    <hr>
+    <a href="/tags-output/tech/">tech</a>
     
+    <a href="/tags-output/python/">python</a>
+    
+    <a href="/tags-output/code/">code</a>
+    
+</div>
+
+<div id="permalink">
+  <a href="/posts-output/2022-10-23-hackdeenbot-v2/">permalink</a>
+</div>
 
     <div id="prev-next">
         
-        <a class="left" href="/">&laquo; Prev</a>
         
-        
-        <a class="right" href="/p/3/">Next &raquo;</a>
+        <a class="right" href="/posts-output/2022-06-27-more-gig-photos/">More Gig Photos &raquo;</a>
         
     </div>
+
+    
+
+
 </div>
 
             </div>

@@ -55,6 +55,17 @@
 <div id="post">
     
     <div class="post-header">
+        <a href="/posts-output/2022-10-23-hackdeenbot-v2/"><h2>hackerdeenbot v2</h2></a>
+        <div id="post-meta">
+            
+            <div class="date">23 October 2022</div>
+        </div>
+    </div>
+    <p>In the dim and distant past I made an <a href="https://github.com/ormiret/spacebot">IRC bot</a> for what was then hackerdeen hackspace. It was written in clojure and had become more hassle than it worth to keep running. This was a combination of friction from JVM (it'll eat <em>all</em> the memory if you're not careful, has it's own SSL cert handling etc.) and my code not being very good at handling disconnects so regularly needing to be manually restarted. </p><p>I wanted to move to something that would have a more complete IRC client (handling authentication, reconnects etc.) and giving me an interface to send messages from external things happening (e.g. space is opened/closed) and respond to commands. </p><p>Options I know of for this are <a href="https://tools.suckless.org/ii/">suckless ii</a> and <a href="https://github.com/irccloud/irccat">irccat</a>. I plumped for irccat, mostly because I had used it before so already kind of knew what I was doing to configure it and the approach to commands is a bit easier there: irccat will call a command handler executable with some env variables to give context of the command trigger and that executable just needs to print to console for response where with ii you'd have to parse the stream of messages for all channels watching for commands (I didn't get as far as figuring out how that would work for PRIVMSG commands) then write response to appropriate file. </p><p>I didn't port over all of the "features" of original hackerdeenbot - some of them connected to other systems that don't exist any more and some were silly jokes that even I think have run their course now. </p>
+    <a href="/posts-output/2022-10-23-hackdeenbot-v2/">Continue reading &#8594;</a>
+    <hr>
+    
+    <div class="post-header">
         <a href="/posts-output/2022-06-27-more-gig-photos/"><h2>More Gig Photos</h2></a>
         <div id="post-meta">
             
@@ -98,17 +109,6 @@
     <a href="/posts-output/2021-12-27-clock/">Continue reading &#8594;</a>
     <hr>
     
-    <div class="post-header">
-        <a href="/posts-output/2020-08-15-building-houses/"><h2>Building Houses In Gardens</h2></a>
-        <div id="post-meta">
-            
-            <div class="date">15 August 2020</div>
-        </div>
-    </div>
-    <p>I have a garden that I don't use. It's about the same size as the footprint of my flat. I think it would be a much better use of the space to put another house on it. I'm unlikely to ever actually do that because planning application to do it would cost money and be a lot of hassle. I don't know the odds of actually getting the planning permission but "low" is likely a good first approximation. </p><p>There are <a href="https://www.ons.gov.uk/peoplepopulationandcommunity/birthsdeathsandmarriages/families/bulletins/familiesandhouseholds/2018#:~:text=In%202018%2C%20there%20were%2027.6%20million%20households%20in%20the%20UK,10%2Dyear%20period%20from%202008.">27.6 million households</a> in the UK and <a href="https://www.ons.gov.uk/economy/environmentalaccounts/articles/oneineightbritishhouseholdshasnogarden/2020-05-14">80% of people have access to a garden</a> so I think there is decent scope for there being more than just me with a garden that would be better off as another house.</p><p>If someone were to offer to do the planning application (and build) for me in exchange for a split of the sale of the new house, I'd be keen to take them up on that. (If anyone does want to make that offer please get in touch.) </p><p>I think there is a workable business model in making that offer. The odds of getting planning permission for any one application might be "low" but make enough of them and some will come through. If you're making a bunch of planning applications you'll have some economies of scale. You could go nuts and automate the whole process (plonk plans for a kit home on map for the site; submit that) and just spam them at planning offices, but I think that's likely to just piss off planning officers and get them all rejected. Something with automated preparation and having a person check them over and only submit ones with best chance of getting approved is likely to work better. Should be able to learn (either with machines or people) what features influence the probability of getting approval. </p>
-    <a href="/posts-output/2020-08-15-building-houses/">Continue reading &#8594;</a>
-    <hr>
-    
 
     <div id="prev-next">
         
@@ -128,6 +128,8 @@
                     <h3>Recent Posts</h3>
                     <ul>
                         
+                        <li><a href="/posts-output/2022-10-23-hackdeenbot-v2/">hackerdeenbot v2</a></li>
+                        
                         <li><a href="/posts-output/2022-06-27-more-gig-photos/">More Gig Photos</a></li>
                         
                         <li><a href="/posts-output/2022-06-13-gig-photos/">Gig Photos</a></li>
@@ -135,8 +137,6 @@
                         <li><a href="/posts-output/2021-12-27-age/">Alternative years</a></li>
                         
                         <li><a href="/posts-output/2021-12-27-clock/">Progress Bar Clock</a></li>
-                        
-                        <li><a href="/posts-output/2020-08-15-building-houses/">Building Houses In Gardens</a></li>
                         
                     </ul>
                 </div>
@@ -147,6 +147,8 @@
                     <ul>
                         
                         <li><a href="/tags-output/space/">space</a></li>
+                        
+                        <li><a href="/tags-output/irc/">irc</a></li>
                         
                         <li><a href="/tags-output/linux/">linux</a></li>
                         
@@ -161,6 +163,8 @@
                         <li><a href="/tags-output/business/">business</a></li>
                         
                         <li><a href="/tags-output/photography/">photography</a></li>
+                        
+                        <li><a href="/tags-output/57N/">57N</a></li>
                         
                         <li><a href="/tags-output/12V/">12V</a></li>
                         
@@ -177,6 +181,8 @@
                         <li><a href="/tags-output/tech/">tech</a></li>
                         
                         <li><a href="/tags-output/notes/">notes</a></li>
+                        
+                        <li><a href="/tags-output/python/">python</a></li>
                         
                         <li><a href="/tags-output/plans/">plans</a></li>
                         
