@@ -55,6 +55,17 @@
 <div id="post">
     
     <div class="post-header">
+        <a href="/posts-output/2018-01-02-save-battery-life/"><h2>Save chrome eating battery life</h2></a>
+        <div id="post-meta">
+            
+            <div class="date">2 January 2018</div>
+        </div>
+    </div>
+    <p>I seem to collect chrome tabs. I usually have a few dozen open, often many more if I haven't cleaned them out for a while. Once upon a time reboots would clear them out but these days I reopen the previous session when I boot so tabs don't go away unless I actually tell them to. Lots of them do stuff in the background so chrome ends up using a decent chunk of CPU time. It is almost always at the top of the list in powertop. </p><p>Most of the time I don't care about this. If my computer is plugged in then it's fine. When I'm running on battery though I care a lot more. Then when I'm doing something that I don't need the web I put chrome to sleep with <code>killall -STOP chrome</code> and then when I want it back: <code>killall -CONT chrome</code>. Bind those two commands to keys and I can stop and start chrome as needed, and when I don't need it it doesn't get to eat my precious battery life. </p>
+    <a href="/posts-output/2018-01-02-save-battery-life/">Continue reading &#8594;</a>
+    <hr>
+    
+    <div class="post-header">
         <a href="/posts-output/2017-10-19-new-camera/"><h2>I want a new camera</h2></a>
         <div id="post-meta">
             
@@ -98,17 +109,6 @@
     <a href="/posts-output/2016-09-03-photography/">Continue reading &#8594;</a>
     <hr>
     
-    <div class="post-header">
-        <a href="/posts-output/2016-08-19-replacing-IR-remote/"><h2>Replacing IR remote</h2></a>
-        <div id="post-meta">
-            
-            <div class="date">19 August 2016</div>
-        </div>
-    </div>
-    <p>I've picked up a few LED floodlights that can do various colours (and some effects) controlled by IR remotes. They have their uses as they are - but I want to replace the IR remotes with something connected to a computer so I can have random programs control them.</p><h3 id="getting_ir_codes">Getting IR codes</h3><p>The first thing I wanted to do was record the IR codes that the remote was sending.</p><p>I found <a href="http://alexba.in/blog/2013/01/06/setting-up-lirc-on-the-raspberrypi/">some stuff</a> on using <a href="http://lirc.org">lirc</a> on a pi, so cut one of the IR receivers off a light and hooked it up to a pi and recorded the codes from the remote. That gave <a href="/code/ir-control/lircd.conf">a lirc config file</a> with the codes.</p>
-    <a href="/posts-output/2016-08-19-replacing-IR-remote/">Continue reading &#8594;</a>
-    <hr>
-    
 
     <div id="prev-next">
         
@@ -130,6 +130,8 @@
                     <h3>Recent Posts</h3>
                     <ul>
                         
+                        <li><a href="/posts-output/2023-01-10-ohm-bee-uns/">Ω 🐝 🥁</a></li>
+                        
                         <li><a href="/posts-output/2022-10-23-hackdeenbot-v2/">hackerdeenbot v2</a></li>
                         
                         <li><a href="/posts-output/2022-06-27-more-gig-photos/">More Gig Photos</a></li>
@@ -137,8 +139,6 @@
                         <li><a href="/posts-output/2022-06-13-gig-photos/">Gig Photos</a></li>
                         
                         <li><a href="/posts-output/2021-12-27-age/">Alternative years</a></li>
-                        
-                        <li><a href="/posts-output/2021-12-27-clock/">Progress Bar Clock</a></li>
                         
                     </ul>
                 </div>
@@ -151,6 +151,10 @@
                         <li><a href="/tags-output/space/">space</a></li>
                         
                         <li><a href="/tags-output/irc/">irc</a></li>
+                        
+                        <li><a href="/tags-output/nim/">nim</a></li>
+                        
+                        <li><a href="/tags-output/web/">web</a></li>
                         
                         <li><a href="/tags-output/linux/">linux</a></li>
                         
@@ -216,7 +220,7 @@
             </div>
         </div>
     </div>
-    <footer>Copyright &copy; 2022 Robert McWilliam
+    <footer>Copyright &copy; 2023 Robert McWilliam
       <p>Writing is under <a href="https://creativecommons.org/licenses/by-sa/4.0/legalcode">CC BY-SA</a></p>
       <p>Code here (that's mine) is under the <a href="http://www.wtfpl.net/txt/copying/">WTFPL</a></p>
       <p>Code that isn't mine is &copy; whoever owns it (should be noted with the code...).</p>

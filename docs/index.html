@@ -55,6 +55,17 @@
 <div id="post">
     
     <div class="post-header">
+        <a href="/posts-output/2023-01-10-ohm-bee-uns/"><h2>Ω 🐝 🥁</h2></a>
+        <div id="post-meta">
+            
+            <div class="date">10 January 2023</div>
+        </div>
+    </div>
+    <p>I have had vague thoughts for a while to make a thing to display random gifs, videos, or other animations as a thing to do with my various screens when they aren't needed to be displaying other things. Kind of like the old days when we used screensavers, but controlled over the network.</p><p>I finally got around to <a href="https://github.com/ormiret/ohm.bee.uns">making it</a>. </p><p>I wanted this to be a web thing so that I only need a browser on whatever displays I want to use. <a href="https://nim-lang.org/">Nim</a> with <a href="https://github.com/dom96/jester">Jester</a> and <a href="https://github.com/karaxnim/karax">Karax</a> are my current favourite approach to web dev. I came across a <a href="https://arhamjain.com/2021/11/22/nim-simple-chat.html">nice example</a> using this stack that also introduced me to <a href="https://htmx.org/">htmx</a> that makes the "open a websocket and display whatever html blobs you get from it" that I wanted for the client side really easy. </p><p>The code itself isn't much use without a collection of animations for it to be serving up. My collection has been built up by saving things I've come across in various places online. Most of which I don't have rights to redistribute (and even the ones that are under licenses that would allow that I haven't kept note of that). <a href="https://www.beeple-crap.com/vjloops">Beeple's VJ loops</a> are a good start with CC license (though I couldn't find anything saying which CC license). The collection should be in <code>public/img/</code> in <code>ohm.bee.uns</code> checkout (or relative to working directory for executable if that is a different place). </p>
+    <a href="/posts-output/2023-01-10-ohm-bee-uns/">Continue reading &#8594;</a>
+    <hr>
+    
+    <div class="post-header">
         <a href="/posts-output/2022-10-23-hackdeenbot-v2/"><h2>hackerdeenbot v2</h2></a>
         <div id="post-meta">
             
@@ -98,17 +109,6 @@
     <a href="/posts-output/2021-12-27-age/">Continue reading &#8594;</a>
     <hr>
     
-    <div class="post-header">
-        <a href="/posts-output/2021-12-27-clock/"><h2>Progress Bar Clock</h2></a>
-        <div id="post-meta">
-            
-            <div class="date">27 December 2021</div>
-        </div>
-    </div>
-    <p>I've long had an idea to make a clock out of progress bars. I needed to figure out how to handle time based events in karax/nim/js for a bigger project so figured this was a good little project to poke at that some. </p><div id="ROOT"></div> <link rel="stylesheet" href="/img/prog.css" />
-    <a href="/posts-output/2021-12-27-clock/">Continue reading &#8594;</a>
-    <hr>
-    
 
     <div id="prev-next">
         
@@ -128,6 +128,8 @@
                     <h3>Recent Posts</h3>
                     <ul>
                         
+                        <li><a href="/posts-output/2023-01-10-ohm-bee-uns/">Ω 🐝 🥁</a></li>
+                        
                         <li><a href="/posts-output/2022-10-23-hackdeenbot-v2/">hackerdeenbot v2</a></li>
                         
                         <li><a href="/posts-output/2022-06-27-more-gig-photos/">More Gig Photos</a></li>
@@ -135,8 +137,6 @@
                         <li><a href="/posts-output/2022-06-13-gig-photos/">Gig Photos</a></li>
                         
                         <li><a href="/posts-output/2021-12-27-age/">Alternative years</a></li>
-                        
-                        <li><a href="/posts-output/2021-12-27-clock/">Progress Bar Clock</a></li>
                         
                     </ul>
                 </div>
@@ -149,6 +149,10 @@
                         <li><a href="/tags-output/space/">space</a></li>
                         
                         <li><a href="/tags-output/irc/">irc</a></li>
+                        
+                        <li><a href="/tags-output/nim/">nim</a></li>
+                        
+                        <li><a href="/tags-output/web/">web</a></li>
                         
                         <li><a href="/tags-output/linux/">linux</a></li>
                         
@@ -214,7 +218,7 @@
             </div>
         </div>
     </div>
-    <footer>Copyright &copy; 2022 Robert McWilliam
+    <footer>Copyright &copy; 2023 Robert McWilliam
       <p>Writing is under <a href="https://creativecommons.org/licenses/by-sa/4.0/legalcode">CC BY-SA</a></p>
       <p>Code here (that's mine) is under the <a href="http://www.wtfpl.net/txt/copying/">WTFPL</a></p>
       <p>Code that isn't mine is &copy; whoever owns it (should be noted with the code...).</p>
