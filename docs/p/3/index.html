@@ -55,6 +55,17 @@
 <div id="post">
     
     <div class="post-header">
+        <a href="/posts-output/2020-07-07-hp-psu/"><h2>HP server PSU</h2></a>
+        <div id="post-meta">
+            
+            <div class="date">7 July 2020</div>
+        </div>
+    </div>
+    <p>The guy with the Swiss accent <a href="https://www.youtube.com/watch?v=0IX3euYOb5E">covered</a> using server PSUs as a cheap 12V power supply. I had seen other computer PSUs converted to use outside of the computers they were intended for but this one tempted me to go for it since it has all it's power as one 12V output and it can drive 62.5A on that output (there are also 1200W models, but 750W seemed like enough for me). And for less than £15. So I got three.</p><p>They've got a few part/model numbers: Regulatory Model No. HSTNS-PL18, Generic Part No. 506821-001, Part No. 506822-001 and Spare Part No. 511778-001.</p><p>First thing I did was power one up and poke at it with a meter. That confirmed that the always on 12V line was where I was expecting it, +12V on pin 37 and GND on pin 30. This always on connection is good for 30W. </p><p>I then soldered a switch between pins 33 and 36. Closing that switch powered on the main 12V output. And some more poking with a meter and some loads confirmed that pin 34 gave an on/off status of a little over 3V and pin 34 gave a voltage that varied with load. This looked about right for the 20A per V I was expecting. That confirmed all the details of the pinout that I cared about.</p>
+    <a href="/posts-output/2020-07-07-hp-psu/">Continue reading &#8594;</a>
+    <hr>
+    
+    <div class="post-header">
         <a href="/posts-output/2020-06-10-pstree/"><h2>The pstree options I want</h2></a>
         <div id="post-meta">
             
@@ -98,17 +109,6 @@
     <a href="/posts-output/2017-10-19-new-camera/">Continue reading &#8594;</a>
     <hr>
     
-    <div class="post-header">
-        <a href="/posts-output/2017-02-26-VNC-extra-monitors/"><h2>VNC extra monitors</h2></a>
-        <div id="post-meta">
-            
-            <div class="date">26 February 2017</div>
-        </div>
-    </div>
-    <p>A couple of times in the past I've thought about using other computers/tablets as additional displays for my main computer. </p><p>This time I actually found a <a href="https://bbs.archlinux.org/viewtopic.php?id=191555">way to do it</a>. </p><p><code>xrandr</code> can be used to create a new monitor without the need for an actual monitor, I used the <code>VIRTUAL1</code> output and was pleased to see a <code>VIRTUAL2</code> pop into existence when I did. Then <code>x11vnc</code> with an appropriate <code>-clip</code> can make a VNC server for that bit of the virtual desktop. </p><p>I tried both a spare laptop and my tablet as extra displays and it seems to work well with either.</p>
-    <a href="/posts-output/2017-02-26-VNC-extra-monitors/">Continue reading &#8594;</a>
-    <hr>
-    
 
     <div id="prev-next">
         
@@ -130,6 +130,8 @@
                     <h3>Recent Posts</h3>
                     <ul>
                         
+                        <li><a href="/posts-output/2023-05-26-more-pictures/">More Pictures</a></li>
+                        
                         <li><a href="/posts-output/2023-04-07-new-camera/">New Camera</a></li>
                         
                         <li><a href="/posts-output/2023-02-19-Sigma-PK-70-210/">Sigma PK 70-210 f2.8</a></li>
@@ -137,8 +139,6 @@
                         <li><a href="/posts-output/2023-01-10-ohm-bee-uns/">Ω 🐝 🥁</a></li>
                         
                         <li><a href="/posts-output/2022-10-23-hackdeenbot-v2/">hackerdeenbot v2</a></li>
-                        
-                        <li><a href="/posts-output/2022-06-27-more-gig-photos/">More Gig Photos</a></li>
                         
                     </ul>
                 </div>
